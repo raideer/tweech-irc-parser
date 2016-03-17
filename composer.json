@@ -1,0 +1,15 @@
+{
+    "name": "raideer/tweech-irc-parser",
+    "authors": [
+        {
+            "name": "raideer",
+            "email": "idmania1@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Raideer\\Tweech": "src"
+        }
+    }
+}
