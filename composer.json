@@ -3,13 +3,13 @@
     "authors": [
         {
             "name": "raideer",
-            "email": "idmania1@gmail.com"
+            "email": "raideer@5v5.lv"
         }
     ],
     "require": {},
     "autoload": {
         "psr-4": {
-            "Raideer\\Tweech": "src"
+            "Raideer\\Tweech\\": "src"
         }
     }
 }
