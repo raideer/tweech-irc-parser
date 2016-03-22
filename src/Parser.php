@@ -22,52 +22,52 @@ class Parser
     public function __construct()
     {
 
-    /*
-     * Regex for parsing the message
-     * http://tools.ietf.org/html/rfc1459#section-2.3.1
-     */
+        /*
+         * Regex for parsing the message
+         * http://tools.ietf.org/html/rfc1459#section-2.3.1
+         */
 
-    $space = ' ';
-    $null = '\\x00';
-    $crlf = "\r\n";
-    $letters = 'A-Za-z';
-    $numbers = '0-9';
-    $special = preg_quote('[]\`_^{|}');
-    $tagsSpecial = preg_quote('#:-_');
+        $space = ' ';
+        $null = '\\x00';
+        $crlf = "\r\n";
+        $letters = 'A-Za-z';
+        $numbers = '0-9';
+        $special = preg_quote('[]\`_^{|}');
+        $tagsSpecial = preg_quote('#:-_');
 
-    $trailing = "[^$null$crlf]*";
-    $username = "[$letters$numbers$special]+";
-    $server = "[$letters$numbers$special\.]+";
+        $trailing = "[^$null$crlf]*";
+        $username = "[$letters$numbers$special]+";
+        $server = "[$letters$numbers$special\.]+";
 
-    $tags = "(?:@(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s)";
+        $tags = "(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s";
 
-    $command = "(?P<command>[A-Z]+|[$numbers]{3})";
+        $command = "(?P<command>[A-Z]+|[$numbers]{3})";
 
-    $params = "(?P<params>$trailing)";
+        $params = "(?P<params>$trailing)";
 
-    $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?P<user>!$username)(?P<host>@$server))";
+        $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?P<user>!$username)(?P<host>@$server))";
 
-    $compiled = "(?P<tags>$tags)?(?::(?P<prefix>$prefix)$space)?$command$space$params$crlf";
+        $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space$params$crlf";
 
-    /*
-     * Regex for parsing the irc message
-     * @var regex string
-     */
-    $this->messageRegex = "/^$compiled$/U";
+        /*
+         * Regex for parsing the irc message
+         * @var regex string
+         */
+        $this->messageRegex = "/^$compiled$/U";
 
-    /*
-     * Command specific regex for parsing parameters
-     * @var array
-     */
-    $this->paramsRegex = [
-      'PRIVMSG' => "/^(?P<chat>#$username)[$space]?:(?P<message>$trailing)$/s",
-      'MODE'    => "/^(?P<chat>#$username)[$space]?(?P<type>[+-]o)(?P<user>$trailing)$/s",
-      '372'     => "/^(?P<username>$username)[$space]?:(?P<motd>$trailing)$/s",
-      '001'     => "/^(?P<username>$username)[$space]?:(?P<welcome>$trailing)$/s",
-      '002'     => "/^(?P<username>$username)[$space]?:(?P<host>$trailing)$/s",
-      '033'     => "/^(?P<username>$username)[$space]?:(?P<created>$trailing)$/s",
-      '353'     => "/^($username)[$space]?\=[$space]?(?P<chat>#$username)[$space]?:(?P<users>$trailing)$$/s",
-    ];
+        /*
+         * Command specific regex for parsing parameters
+         * @var array
+         */
+        $this->paramsRegex = [
+          'PRIVMSG' => "/^(?P<chat>#$username)[$space]?:(?P<message>$trailing)$/s",
+          'MODE'    => "/^(?P<chat>#$username)[$space]?(?P<type>[+-]o)(?P<user>$trailing)$/s",
+          '372'     => "/^(?P<username>$username)[$space]?:(?P<motd>$trailing)$/s",
+          '001'     => "/^(?P<username>$username)[$space]?:(?P<welcome>$trailing)$/s",
+          '002'     => "/^(?P<username>$username)[$space]?:(?P<host>$trailing)$/s",
+          '033'     => "/^(?P<username>$username)[$space]?:(?P<created>$trailing)$/s",
+          '353'     => "/^($username)[$space]?\=[$space]?(?P<chat>#$username)[$space]?:(?P<users>$trailing)$$/s",
+        ];
     }
 
     protected function removeIntegerKeys(array $array)
