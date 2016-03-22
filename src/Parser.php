@@ -2,15 +2,12 @@
 
 namespace Raideer\Tweech;
 
-/**
- * Rough temporary twitch irc message parser
- */
 class Parser
 {
     /**
-    * Holds regex string for parsing the message.
+    * Holds the regex for parsing the message.
     *
-    * @var string
+    * @var string/regex
     */
     protected $messageRegex;
     protected $messageRegexBasic;
@@ -31,38 +28,33 @@ class Parser
      */
 
     $space = ' ';
-        $null = '\\x00';
-        $crlf = "\r\n";
-        $letters = 'A-Za-z';
-        $numbers = '0-9';
-        $special = preg_quote('[]\`_^{|}');
-        $tagsSpecial = preg_quote('#:-_');
+    $null = '\\x00';
+    $crlf = "\r\n";
+    $letters = 'A-Za-z';
+    $numbers = '0-9';
+    $special = preg_quote('[]\`_^{|}');
+    $tagsSpecial = preg_quote('#:-_');
 
-        $trailing = "[^$null$crlf]*";
-        $username = "[$letters$numbers$special]+";
-        $server = "(?:(?:[$letters$numbers\.]*)\.(?:[$letters$numbers]+)\.(?:[$letters]+))";
+    $trailing = "[^$null$crlf]*";
+    $username = "[$letters$numbers$special]+";
+    $server = "[$letters$numbers$special\.]+";
 
-        $prefixFull = "(?:(?P<username>$username)(!$username)(@$username)\.(?P<server>$server))";
-        $prefixPart = "(?:(?P<usernamep>$username)\.(?P<serverp>$server))";
-        $prefixSmall = "(?:(?P<servers>$server|jtv))";
+    $tags = "(?:@(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s)";
 
-        $tags = "(?:@(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s)";
+    $command = "(?P<command>[$letters]+|[$numbers]{3})";
 
-        $command = "(?P<command>[$letters]+|[$numbers]{3})";
+    $params = "(?P<params>$trailing)";
 
-        $params = "(?P<params>$trailing)";
+    $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?P<user>!$username)(?P<host>@$server))";
 
-        $prefix = "(?:$prefixFull|$prefixPart|$prefixSmall)";
-
-        $compiled = "(?P<tags>$tags)?:(?P<prefix>$prefix)?[$space]$command$space$params$crlf";
-        $basic = "(?:$command$space:(?P<server>$server))";
+    $compiled = "(?P<tags>$tags)?:(?:(?P<prefix>$prefix)$space)?$command$space$params$crlf";
 
     /*
      * Regex for parsing the irc message
      * @var regex string
      */
     $this->messageRegex = "/^$compiled$/U";
-        $this->messageRegexBasic = "/^$basic/U";
+
     /*
      * Command specific regex for parsing parameters
      * @var array
@@ -89,41 +81,15 @@ class Parser
         return $array;
     }
 
-    /**
-    * Removes cuts and pastes key value into a different key
-    * Used here to remove duplicate keys
-    * e.g. There should be only $parsed['server'] not $parsed['servers'] and $parsed['serverp'].
-    *
-    * @param  key $from
-    * @param  key $to
-    * @param  array $parsed
-    *
-    * @return array
-    */
-    protected function copyAndDelete($from, $to, $parsed)
-    {
-      if (array_key_exists($from, $parsed)) {
-          if ($parsed[$to] != null) {
-              unset($parsed[$from]);
-
-              return $parsed;
-          }
-          $parsed[$to] = $parsed[$from];
-          unset($parsed[$from]);
-      }
-
-      return $parsed;
-    }
-
-    /**
-    * Checks each message and runs the parameters through regex.
-    *
-    * @param  array $parsed
-    *
-    * @return array
-    */
-    protected function parseParameters($parsed)
-    {
+  /**
+   * Checks each message and runs the parameters through regex.
+   *
+   * @param  array $parsed
+   *
+   * @return array
+   */
+  protected function parseParameters($parsed)
+  {
       $command = strtoupper($parsed['command']);
 
       if (!array_key_exists($command, $this->paramsRegex)) {
@@ -141,50 +107,36 @@ class Parser
       }
 
       return $this->removeIntegerKeys($parsed);
-    }
+  }
 
-    /**
-    * Main parsing function.
-    *
-    * @param  string $message Received irc message
-    *
-    * @return array           Parsed
-    */
-    public function parse($message)
-    {
-      //Checking if the message is a full line
+  /**
+   * Main parsing function.
+   *
+   * @param  string $message Received irc message
+   *
+   * @return array           Parsed
+   */
+  public function parse($message)
+  {
+    //Checking if the message is a full line
     if (strpos($message, "\r\n") === false) {
         return;
     }
 
     //Parsing the message
     if (!preg_match($this->messageRegex, $message, $parsed)) {
-        //Trying again if fails
-      if (!preg_match($this->messageRegexBasic, $message, $parsed)) {
-          $parsed = ['invalid' => $message];
+        $parsed = ['invalid' => $message];
 
-          return $parsed;
-      }
+        return $parsed;
     }
 
     /*
-     * Removing duplicate keys
-     * usernamep -> username
-     * serverp -> server
-     * servers -> server
-     * @var [type]
-     */
-    $parsed = $this->copyAndDelete('usernamep', 'username', $parsed);
-      $parsed = $this->copyAndDelete('serverp', 'server', $parsed);
-      $parsed = $this->copyAndDelete('servers', 'server', $parsed);
-
-    /*
-     * Raw message
-     */
+    * Raw message
+    */
     $parsed['raw'] = $parsed[0];
 
-      $parsed = $this->parseParameters($parsed);
+    $parsed = $this->parseParameters($parsed);
 
-      return array_filter($this->removeIntegerKeys($parsed));
-    }
+    return array_filter($this->removeIntegerKeys($parsed));
+  }
 }
