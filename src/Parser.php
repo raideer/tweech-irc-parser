@@ -41,11 +41,11 @@ class Parser
 
     $tags = "(?:@(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s)";
 
-    $command = "(?P<command>[$letters]+|[$numbers]{3})";
+    $command = "(?P<command>[A-Z]+|[$numbers]{3})";
 
     $params = "(?P<params>$trailing)";
 
-    $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?P<user>!$username)(?P<host>@$server))";
+    $prefix = "(?:(?P<servername>$server|jtv)|(?P<nick>$username)(?P<user>!$username)(?P<host>@$server))";
 
     $compiled = "(?P<tags>$tags)?:(?:(?P<prefix>$prefix)$space)?$command$space$params$crlf";
 
