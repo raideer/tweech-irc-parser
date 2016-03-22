@@ -1,5 +1,6 @@
 {
     "name": "raideer/tweech-irc-parser",
+    "license": "MIT",
     "authors": [
         {
             "name": "raideer",
