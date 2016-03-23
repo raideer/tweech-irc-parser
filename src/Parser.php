@@ -33,7 +33,7 @@ class Parser
         $letters = 'A-Za-z';
         $numbers = '0-9';
         $special = preg_quote('[]\`_^{|}');
-        $tagsSpecial = preg_quote('#:-_,');
+        $tagsSpecial = preg_quote('#:-_/,');
 
         $trailing = "[^$null$crlf]*";
         $username = "[$letters$numbers$special]+";
@@ -53,7 +53,7 @@ class Parser
          * Regex for parsing the irc message
          * @var regex string
          */
-        $this->messageRegex = "/^$compiled$/U";
+        $this->messageRegex = "`^$compiled$`U";
 
         /*
          * Command specific regex for parsing parameters
