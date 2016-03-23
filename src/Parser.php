@@ -33,13 +33,13 @@ class Parser
         $letters = 'A-Za-z';
         $numbers = '0-9';
         $special = preg_quote('[]\`_^{|}');
-        $tagsSpecial = preg_quote('#:-_,\/');
+        $tagsSpecial = preg_quote('#:-_,');
 
         $trailing = "[^$null$crlf]*";
         $username = "[$letters$numbers$special]+";
         $server = "[$letters$numbers$special\.]+";
 
-        $tags = "(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s";
+        $tags = "(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters\/$numbers$tagsSpecial]+)?;?)?)+\s";
 
         $command = "(?P<command>[A-Z]+|[$numbers]{3})";
 
