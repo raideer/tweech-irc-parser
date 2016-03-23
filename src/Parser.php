@@ -60,13 +60,13 @@ class Parser
          * @var array
          */
         $this->paramsRegex = [
-          'PRIVMSG' => "/^(?P<chat>#$username)[$space]?:(?P<message>$trailing)$/s",
-          'MODE'    => "/^(?P<chat>#$username)[$space]?(?P<type>[+-]o)(?P<user>$trailing)$/s",
-          '372'     => "/^(?P<username>$username)[$space]?:(?P<motd>$trailing)$/s",
-          '001'     => "/^(?P<username>$username)[$space]?:(?P<welcome>$trailing)$/s",
-          '002'     => "/^(?P<username>$username)[$space]?:(?P<host>$trailing)$/s",
-          '033'     => "/^(?P<username>$username)[$space]?:(?P<created>$trailing)$/s",
-          '353'     => "/^($username)[$space]?\=[$space]?(?P<chat>#$username)[$space]?:(?P<users>$trailing)$$/s",
+          'PRIVMSG' => "`^(?P<chat>#$username)[$space]?:(?P<message>$trailing)$`s",
+          'MODE'    => "`^(?P<chat>#$username)[$space]?(?P<type>[+-]o)(?P<user>$trailing)$`s",
+          '372'     => "`^(?P<username>$username)[$space]?:(?P<motd>$trailing)$`s",
+          '001'     => "`^(?P<username>$username)[$space]?:(?P<welcome>$trailing)$`s",
+          '002'     => "`^(?P<username>$username)[$space]?:(?P<host>$trailing)$`s",
+          '033'     => "`^(?P<username>$username)[$space]?:(?P<created>$trailing)$`s",
+          '353'     => "`^($username)[$space]?\=[$space]?(?P<chat>#$username)[$space]?:(?P<users>$trailing)$$`s",
         ];
     }
 
