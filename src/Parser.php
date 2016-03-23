@@ -45,7 +45,7 @@ class Parser
 
         $params = "(?P<params>$trailing)";
 
-        $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?P<user>!$username)(?P<host>@$server))";
+        $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?:!(?P<user>$username))?(?:@(?P<host>$server))?)";
 
         $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space$params$crlf";
 
