@@ -32,7 +32,7 @@ class Parser
         $crlf = "\r\n";
         $letters = 'A-Za-z';
         $numbers = '0-9';
-        $special = preg_quote('[]\_^{|}');
+        $special = preg_quote('[]_^{|}');
         $tagsSpecial = preg_quote('#:-_/,');
 
         $trailing = "[^$null$crlf]*";
