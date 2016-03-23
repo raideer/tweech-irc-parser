@@ -39,7 +39,7 @@ class Parser
         $username = "[$letters$numbers$special]+";
         $server = "[$letters$numbers$special\.]+";
 
-        $tags = "(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters\/$numbers$tagsSpecial]+)?;?)?)+\s";
+        $tags = "(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s";
 
         $command = "(?P<command>[A-Z]+|[$numbers]{3})";
 
