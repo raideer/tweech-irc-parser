@@ -28,17 +28,16 @@ class Parser
          */
 
         $space = ' ';
-        $null = '\\x00';
         $crlf = "\r\n";
         $letters = 'A-Za-z';
         $numbers = '0-9';
-        $special = preg_quote('[]_^{|}');
+        $special = '_';
         $tagsSpecial = preg_quote('#:-_/,');
 
-        $trailing = "[^$null$crlf]*";
-        $username = "[$letters$numbers$special]+";
+        $trailing = "[^$crlf]*";
+        $username = "[$letters$numbers$special]{4,25}";//^[a-zA-Z0-9_]{4,25}$
         $server = "[$letters$numbers$special\.]+";
-        $chstring = "[^$space$null$crlf,]+";
+        $chstring = "[^$space$crlf,]+";
 
         $mask = "(?:(?:#|$)$chstring)";
         $channel = "(?:(?:#|&)$chstring)";
@@ -53,7 +52,7 @@ class Parser
 
         $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?:!(?P<user>$username))(?:@(?P<host>$server)))";
 
-        $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space(?:$target$space)?(?::?$params)?$crlf";
+        $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space$params$crlf";
 
         /*
          * Regex for parsing the irc message
@@ -66,13 +65,13 @@ class Parser
          * @var array
          */
         $this->paramsRegex = [
-          'PRIVMSG' => "`^(?P<chat>#$username)[$space]?:(?P<message>$trailing)$`s",
-          'MODE'    => "`^(?P<chat>#$username)[$space]?(?P<type>[+-]o)(?P<user>$trailing)$`s",
-          '372'     => "`^(?P<username>$username)[$space]?:(?P<motd>$trailing)$`s",
-          '001'     => "`^(?P<username>$username)[$space]?:(?P<welcome>$trailing)$`s",
-          '002'     => "`^(?P<username>$username)[$space]?:(?P<host>$trailing)$`s",
-          '033'     => "`^(?P<username>$username)[$space]?:(?P<created>$trailing)$`s",
-          '353'     => "`^($username)[$space]?\=[$space]?(?P<chat>#$username)[$space]?:(?P<users>$trailing)$$`s",
+          'PRIVMSG' => "`^(?P<chat>#$username)$space:(?P<message>$trailing)$`",
+          'MODE'    => "`^(?P<chat>#$username)$space(?P<type>[+-]o)(?P<user>$trailing)$`",
+          '372'     => "`^(?P<username>$username)$space:(?P<motd>$trailing)$`",
+          '001'     => "`^(?P<username>$username)$space:(?P<welcome>$trailing)$`",
+          '002'     => "`^(?P<username>$username)$space:(?P<host>$trailing)$`",
+          '033'     => "`^(?P<username>$username)$space:(?P<created>$trailing)$`",
+          '353'     => "`^($username)[$space]?\=$space(?P<chat>#$username)[$space]?:(?P<users>$trailing)$`",
         ];
     }
 
