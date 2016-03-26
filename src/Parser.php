@@ -38,6 +38,12 @@ class Parser
         $trailing = "[^$null$crlf]*";
         $username = "[$letters$numbers$special]+";
         $server = "[$letters$numbers$special\.]+";
+        $chstring = "[^$space$null$crlf,]+";
+
+        $mask = "(?:(?:#|$)$chstring)";
+        $channel = "(?:(?:#|&)$chstring)";
+        $to = "$channel|$username@$server|$username|$mask";
+        $target = "(?P<target>$to(?:,$to)*)";
 
         $tags = "(?:(?:[$letters$numbers\-]+)=(?:(?:[$letters$numbers$tagsSpecial]+)?;?)?)+\s";
 
@@ -47,7 +53,7 @@ class Parser
 
         $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?:!(?P<user>$username))(?:@(?P<host>$server)))";
 
-        $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space(?:[^:]*)(?::?$params)$crlf";
+        $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space(?:$target$space)?(?::?$params)$crlf";
 
         /*
          * Regex for parsing the irc message
