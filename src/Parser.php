@@ -53,7 +53,7 @@ class Parser
 
         $prefix = "(?:(?P<servername>$server)|(?P<nick>$username)(?:!(?P<user>$username))(?:@(?P<host>$server)))";
 
-        $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space(?:$target$space)?(?::?$params)$crlf";
+        $compiled = "(?:@(?P<tags>$tags))?(?::(?P<prefix>$prefix)$space)?$command$space(?:$target$space)?(?::$params)?$crlf";
 
         /*
          * Regex for parsing the irc message
